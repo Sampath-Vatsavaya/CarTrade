@@ -35,7 +35,11 @@ function calcemi()
    
     emi_bar.style.display="flex";
       
-  
+    const table= document.querySelector("#emi-table-op");
+    let balance=principal
+    let out="";
+
+    console.log(table.innerHTML);
     
     var emi_op= Math.max(1,emi_value-100,emi_value-1000);
     var interest_op = Math.max(1,total_interest-100,total_interest-1000);
@@ -68,8 +72,33 @@ function calcemi()
             }
          },1);
   
+       
+       
+         for(let m=1;m<=loan_tenure_months;m++)
+         {
+          const interest_new=balance*rate;
+          const principalpaid=emi_value-interest_new;
+          balance= Math.max(0,balance-principalpaid);
+          // tb.push({
+          //      Month:m,
+          //      EMI: emi_value,
+          //      principal:principalpaid.toFixed(0),
+          //      Interest:interest_new.toFixed(0),
+          //      Balance:balance.toFixed(0),
+          //     })
+          out+=`<tr>
+          <td>${m}</td>
+          
+          <td>${principalpaid.toFixed(0)}</td>
+          <td>${interest_new.toFixed(0)}</td>
+          <td>${emi_value}</td>
+          <td>${balance.toFixed(0)}</td>
+      </tr>`
+         }
+         
   
-  
+         
+         table.innerHTML=out;
   
     }
 

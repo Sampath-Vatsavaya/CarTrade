@@ -1,0 +1,23 @@
+
+#edit
+{
+    border: 5px solid black;
+    background-color:red;
+    position: fixed;
+    padding: 30px;
+    top:30%;
+    left:40%;
+   
+    display:none;
+}
+
+
+#op-table{
+   
+    
+    display: block;
+}
+#submit-btn
+{    
+    display: block;
+}
