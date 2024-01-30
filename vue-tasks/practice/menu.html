@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+   
+        .menubtn{ border:1px solid #ccc; padding:5px; margin-right:5px; cursor: pointer;}
+    .active{ background-color: #eee; }
+
+    .menubar2{ display:flex; border-bottom:1px solid #ccc; padding-left:20px; }
+    .menubtn2{ border:1px solid #ccc; padding:5px; margin-right:5px; cursor: pointer;}
+    .submenu{ position: absolute; display:none; border:1px solid #ccc; box-shadow:1px 1px 3px black; background-color: #f8f8f8;;}
+    .submenu1{ margin-top:-10px;margin-left:80px;position: absolute; display:none; border:1px solid #ccc; box-shadow:1px 1px 3px black; background-color: #f8f8f8;;}
+    .submenu div{ padding:3px 10px; border-bottom:1px solid black;}
+    .submenu1 div{ padding:3px 10px; border-bottom:1px solid black;}
+    .submenu div:hover{ background-color: #ccc; font-weight: bold;}
+    .submenu1 div:hover{ background-color: #ccc; font-weight: bold;}
+    .menubtn2:hover .submenu{display:block;}
+    .menubtn3:hover .submenu1{display:block;}
+
+    </style>
+</head>
+<body>
+    <div id="app">
+
+
+
+        <!-- <div class="menubar">
+            <div class="primary-menu" v-for="k,v in states">
+                <div>{{v}}</div>
+                <div class="secondary-menu" v-for="x in k" >
+                     <div v-for="a,b in x" class="secondary-menu-btn">
+                        <div>{{b}}</div>
+                        <div class="tertiary-menu">
+                            <div v-for="y in a">
+                                {{y}}
+                            </div>
+                        </div>
+                     </div> 
+                     
+                </div>
+            </div>
+        </div> -->
+        <div class="menubar2">
+            <div v-for="m,s in states" class="menubtn2" >
+                <div>{{ s }}</div>
+                <div class="submenu" >
+                    <div v-for="c,t in m" class="menubtn3">
+                        <div>{{ t }}</div>
+                        <div class="submenu1">
+                            <div v-for="p,x in c" >
+                                {{ p }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+<script>
+    const app= Vue.createApp({
+        data:function()
+        {
+            return {
+                "states": {
+                    "Andhra Pradesh": {
+                        "Kakinada":["Gandhi Nagar","Madhura Nagar","Venkat Nagar"], 
+                        "Rajahmundry":["Hukumpet","Diwancheruvu","Seethampet"],
+                        "Vizag":["Gajuwaka","Maharani Peta","Dwaraka Nagar"]
+                    },
+                    "Tamil Nadu": {
+                    "Chennai":["Gandhi Nagar","Madhura Nagar","Venkat Nagar"], 
+                        "Madhurai":["Hukumpet","Diwancheruvu","Seethampet"],
+                        "Rameswaram":["Gajuwaka","Maharani Peta","Dwaraka Nagar"]
+                    }
+                },
+            }
+        }
+    }).mount("#app");
+    
+</script>
+</body>
+
+</html>

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Management System</title>
+	<link rel="stylesheet" href="bootstrap-5.3.2-dist/css/bootstrap.min.css" />
+    <script src="bootstrap-5.3.2-dist/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+	<div id="app">
+		<button class="btn btn-primary" v-on:click="show_add_form">Add Bill </button>
+		<table class="table table-hover table-striped">
+			<thead>
+				<tr>
+					<th>Sno.</th>
+					<th>Customer Name</th>
+					<th>Mobile Number</th>
+					<th>Vehicle No</th>
+					<th>Billing Amount</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr v-for="bill,i in bills">
+					<td>{{i+1}}</td>
+					<td>{{bill.name}}</td>
+					<td>{{bill.mobile}}</td>
+					<td>{{bill.vehicle_no}}</td>
+					<td>{{bill.amount}}</td>
+					<td><input type="button" value="X" @click="delete_customer_record(i)"></td>
+					<td><input type="button" value="Edit" @click="edit_customer_record(i)"></td>
+				</tr>
+			</tbody>
+		</table>
+		
+
+		<div  class="modal fade" id="addbillpopup" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Add Bill</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+				<table>
+					<tr>
+						<td>Customer Name</td>
+						<td>Mobile Number</td>
+						<td>Vehicle Number</td>
+						<td>Amount</td>
+					</tr>
+					<tr>
+						<td><input type="text" v-model="new_record['name']"></td>
+						<td><input type="text" v-model="new_record['mobile']"></td>
+						<td><input type="text" v-model="new_record['vehicle_no']"></td>
+						<td>{{new_record.amount}}</td>
+					</tr>
+
+				</table>
+				<table class="table table-hover">
+					
+						<tr>
+							<td>#</td>
+							<td>Service</td>
+							<td>Price</td>
+
+						</tr>
+
+					
+						<tr v-for="p,i in new_record['services_availed']">
+							<td>{{i+1}}</td>
+							<td>
+								<select class="form-select form-select-sm" v-on:change="service_selected(i)" v-model="p['id']">
+									<option v-for="s,si in services" v-bind:value="si" >{{s['sname']}}</option>
+								</select> 
+							</td>
+							<td>{{p['price']}}</td>
+							<td><input type="button" value="X" v-on:click="delete_item(i)" /></td>
+						</tr>
+					
+				</table>
+				<div><input type="button" value="+" v-on:click="add_service" /></div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" v-on:click="add_bill()">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+	  <div  class="modal fade" id="editbillpopup" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Bill</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+				<table>
+					<tr>
+						<td>Customer Name</td>
+						<td>Mobile Number</td>
+						<td>Vehicle Number</td>
+						<td>Amount</td>
+					</tr>
+					<tr>
+						<td><input type="text" v-model="edit_record['name']"></td>
+						<td><input type="text" v-model="edit_record['mobile']"></td>
+						<td><input type="text" v-model="edit_record['vehicle_no']"></td>
+						<td>{{edit_record.amount}}</td>
+					</tr>
+
+				</table>
+				<table class="table table-hover">
+					
+						<tr>
+							<td>#</td>
+							<td>Service</td>
+							<td>Price</td>
+
+						</tr>
+
+					
+						<tr v-for="p,i in edit_record['services_availed']">
+							<td>{{i+1}}</td>
+							<td>
+								<select class="form-select form-select-sm" v-on:change="edit_service_selected(i)" v-model="p['id']">
+									<option v-for="s,si in services" v-bind:value="si" >{{s['sname']}}</option>
+								</select> 
+							</td>
+							<td>{{p['price']}}</td>
+							<td><input type="button" value="X" v-on:click="delete_edit_item(i)" /></td>
+						</tr>
+					
+				</table>
+				<div><input type="button" value="+" v-on:click="edit_form_add_service" /></div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" v-on:click="save_edited_bill()">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+	</div>
+	<script>
+	const app = Vue.createApp({
+		data:function()
+		{
+			return {
+				edit_index : -1,
+				bills:[{
+					"name":"Rajesh",
+					"mobile":"9876543210",
+					"vehicle_no":"AP39DE2345",
+					"amount":1700,
+					"free_service":false,
+					"services_availed":[
+					{
+						"id":1,
+						"service":"Engine Oil Replacement",
+						"price":800
+					},
+					{
+						"id":2,
+						"service":"Gear Oil Replacement",
+						"price":900
+					}]
+				},
+				{
+					"name":"Ramesh",
+					"mobile":"8768345210",
+					"vehicle_no":"AP39DZ1234",
+					"amount":2200,
+					"free_service":false,
+					"services_availed":[
+					{
+						"id":1,
+						"service":"Gear Oil Replacement",
+						"price":900
+					},
+					{
+						"id":2,
+						"service":"Air Filter Replacement",
+						"price":1300
+					}]
+				},],
+	
+				services:[{
+					"sname":"Engine Oil Replacement",
+					"price":800,
+				},
+				{
+					"sname":"Gear Oil Replacement",
+					"price":900,
+				},
+				{
+					"sname":"Air Filter Replacement",
+					"price":1300,
+				}],
+				new_record:{
+					"name":"",
+					"mobile":"",
+					"vehicle_no":"",
+					"amount":0,
+					"free_service":false,
+					"services_availed":[
+					{
+						"id":-1,
+						"service":"",
+						"price":0,
+					}]
+				},
+				edit_record:{
+					"name":"",
+					"mobile":"",
+					"vehicle_no":"",
+					"amount":0,
+					"free_service":false,
+					"services_availed":[
+					{
+						"id":-1,
+						"service":"",
+						"price":0,
+					}]
+				},
+				
+			
+				
+
+			}
+		},
+		mounted:function()
+		{
+			this.show_add_form();
+		},
+		methods:{
+			add_service: function(){
+				this.new_record['services_availed'].push({
+					"id":"",
+					"price": "",
+				});
+			},
+			edit_form_add_service: function(){
+				this.edit_record['services_availed'].push({
+					"id":"",
+					"price": "",
+				});
+			},
+			service_selected:function(i)
+			{
+				
+					
+					let p= this.services[this.new_record['services_availed'][i]['id']]['price'];
+					console.log(p);
+					this.new_record['services_availed'][i]['price']=p;
+					this.calc_amount();
+				
+			},
+			calc_amount:function()
+			{
+				var n = 0;
+                  for(var i=0;i<this.new_record['services_availed'].length;i++){
+                      n = n + this.new_record['services_availed'][i]['price'];
+                  }
+                  this.new_record['amount'] = n;
+			},
+			delete_customer_record(ci)
+			{
+				this.bills.splice(ci,1)
+			},
+			show_add_form: function(){
+				pop = new bootstrap.Modal(document.getElementById('addbillpopup') );
+				pop.show();
+			},
+			delete_item:function(i)
+			{
+				let r=this.new_record['services_availed'][i]["price"];
+				console.log(r);
+				this.new_record['amount']-=r;
+				this.new_record['services_availed'].splice(i,1);
+			},
+			delete_edit_item:function(i)
+			{
+				let r=this.edit_record['services_availed'][i]["price"];
+				console.log(r);
+				this.edit_record['amount']-=r;
+				this.edit_record['services_availed'].splice(i,1);
+			},
+			add_bill:function()
+			{
+				this.bills.push(JSON.parse(JSON.stringify(this.new_record)));
+				this.new_record={
+					"name":"",
+					"mobile":"",
+					"vehicle_no":"",
+					"amount":0,
+					"free_service":false,
+					"services_availed":[
+					{
+						"id":-1,
+						"service":"",
+						"price":0,
+					}]
+				};
+				pop.hide();
+			},
+			edit_customer_record:function(i)
+			{	
+				edit_pop = new bootstrap.Modal(document.getElementById('editbillpopup') );
+				edit_pop.show();
+				this.edit_index=i;
+				this.edit_record['name']=this.bills[i].name+'';
+				this.edit_record['mobile']=this.bills[i].mobile+'';
+				this.edit_record['vehicle_no']=this.bills[i].vehicle_no+'';
+				this.edit_record['amount']=this.bills[i].amount+'';
+				this.edit_record['services_availed']=JSON.parse(JSON.stringify(this.bills[i]['services_availed']));
+				
+			}, 
+			edit_service_selected:function(i)
+			{
+				
+					
+					let p= this.services[this.edit_record['services_availed'][i]['id']]['price'];
+					console.log(p);
+					this.edit_record['services_availed'][i]['price']=p;
+					this.edit_calc_amount();
+
+				
+			},
+			edit_calc_amount:function()
+			{
+				var n = 0;
+                  for(var i=0;i<this.edit_record['services_availed'].length;i++){
+                      n = n + this.edit_record['services_availed'][i]['price'];
+                  }
+                  this.edit_record['amount'] = n;
+			},
+			save_edited_bill:function()
+			{	
+				let i = this.edit_index;
+			
+                this.bills[i].name=this.edit_record.name+'',
+				this.bills[i]['vehicle_no']=this.edit_record['vehicle_no']+'',
+                this.bills[i]['mobile'] = this.edit_record['mobile']+'',
+                this.bills[i]['amount'] = this.edit_record['amount']+'',
+                this.bills[i]['services_availed']= JSON.parse( JSON.stringify( this.edit_record['services_availed'] ) );
+                edit_pop.hide();
+			}
+		}
+	}).mount("#app");
+	</script>
+</body>
+</html>

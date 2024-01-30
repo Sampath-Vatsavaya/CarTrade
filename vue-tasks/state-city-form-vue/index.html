@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.30/vue.global.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="app">
+
+        <div id="states-div">
+            <div id="addform" v-bind:style="[state_add_display ? {display:'block'}:{display:'none'}]">
+                <h3>Add State</h3>
+                <input type="button" value="X" @click="editclose()">
+                <label>State Name:</label>
+                <input type="text" v-model="statename" class="form-control">
+                <label>Capital:</label>
+                <input type="text" v-model="capital" class="form-control">
+                <label>Population:</label>
+                <input type="number" v-model="population" class="form-control">
+                <label>CM:</label>
+                <input type="text" v-model="cm" class="form-control">
+                <button v-on:click="addstate()" class="form-control btn btn-primary">Submit</button>
+    
+            </div>
+            <div id="editform" v-bind:style="[edit_display ? {display:'block'}:{display:'none'}]">
+                <div id="edit_header">
+                    <h3>Edit state</h3>
+                    <input type="button" value="X" @click="editclose()">
+                </div>
+                <label>State Name:</label>
+                <input type="text" v-model="edit_statename" class="form-control">
+                <label>Capital:</label>
+                <input type="text" v-model="edit_capital" class="form-control">
+                <label>Population:</label>
+                <input type="number" v-model="edit_population" class="form-control">
+                <label>CM:</label>
+                <input type="text" v-model="edit_cm" class="form-control">
+                <button v-on:click="savechanges()" class="form-control btn btn-primary">Save</button>
+    
+            </div>
+    
+            <div id="states-list">
+                <input type="button" value="ADD State" @click="display_add_state_form()">
+                <table class="table  table-striped" style="width:auto;">
+                    <thead style="font-weight:bold">
+                        <tr>
+                            <td>Statename</td>
+                            <td>Capital</td>
+                            <td>Population</td>
+                            <td>CM</td>
+                            <td></td>
+                            <td>
+                            </td>
+                        </tr>
+                    </thead>
+                    <tr v-for="(item,i) in states">
+        
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.capital }}</td>
+                        <td>{{ item.population }}</td>
+                        <td>{{ item.cm }}</td>
+                        <td><input type="button" value="X" @click="deleter(i)"></td>
+                        <td><input type="button" value="EDIT" @click="edit(i)"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    <div id="cities-div">
+        <div id="addform" v-bind:style="[city_add_display ? {display:'block'}:{display:'none'}]">
+            <h3>Add City</h3>
+            <input type="button" value="X" @click="editclose()">
+            <label>City Name:</label>
+            <input type="text" v-model="cityname" class="form-control">
+            <label>State:</label>
+            <input type="text" v-model="city_state" class="form-control">
+            <label>Population:</label>
+            <input type="number" v-model="city_population" class="form-control">
+            <label>MLA:</label>
+            <input type="text" v-model="mla" class="form-control">
+            <button v-on:click="addcity()" class="form-control btn btn-primary">Submit</button>
+
+        </div>
+        <div id="editform" v-bind:style="[city_edit_display ? {display:'block'}:{display:'none'}]">
+            <div id="edit_header">
+                <h3>Edit City</h3>
+                <input type="button" value="X" @click="editclose()">
+            </div>
+            <label>City Name:</label>
+            <input type="text" v-model="edit_cityname" class="form-control">
+            <label>State:</label>
+            <input type="text" v-model="edit_state" class="form-control">
+            <label>Population:</label>
+            <input type="number" v-model="edit_city_population" class="form-control">
+            <label>MLA:</label>
+            <input type="text" v-model="edit_mla" class="form-control">
+            <button v-on:click="city_savechanges()" class="form-control btn btn-primary">Save</button>
+
+        </div>
+        <div id="cities-list">
+            <input type="button" value="ADD City" @click="display_add_city_form()">
+            <table class="table  table-striped" style="width:auto">
+                <thead style="font-weight:bold">
+                    <tr>
+                        <td>CityName</td>
+                        <td>State</td>
+                        <td>Population</td>
+                        <td>MLA</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tr v-for="(item,i) in cities">
+    
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.state }}</td>
+                    <td>{{ item.population }}</td>
+                    <td>{{ item.mla }}</td>
+                    <td><input type="button" value="X" @click="city_deleter(i)"></td>
+                    <td><input type="button" value="EDIT" @click="city_edit(i)"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    </div>
+
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+
+                    statename: "",
+                    capital: "",
+                    population: "",
+                    cm: "",
+                    edit_statename: "",
+                    edit_capital: "",
+                    edit_population: "",
+                    edit_cm: "",
+                    edit_display: false,
+                    edit_index: -1,
+                    state_add_display: false,
+                    states: [{ name: "Andhra Pradesh", capital: "Amravati", population: 100000, cm: "Jagan" }, { name: "Telangana", capital: "Hyderabad", population: 100000, cm: "Revanth" }],
+                    out: "",
+                    cityname: "",
+                    city_state: "",
+                    city_population: "",
+                    mla: '',
+                    cities: [{ name: "Rajanagaram", state: "Andhra Pradesh", population: 100000, mla: "Raja" }, { name: "Anaparthi", state: "Andhra Pradesh", population: 100000, mla: "Gangireddi" }],
+                    city_edit_display: false,
+                    edit_cityname: "",
+                    edit_state: "",
+                    edit_city_population: "",
+                    edit_mla: "",
+                    city_add_display: false,
+
+
+
+                }
+            },
+            methods: {
+                addstate() {
+                    this.states.push({
+                        "name": this.statename,
+                        "capital": this.capital,
+                        "population": this.population,
+                        "cm": this.cm
+
+
+                    }),
+                    this.state_add_display=false
+
+
+                },
+                deleter(ind) {
+                    this.states.splice(ind, 1);
+
+                },
+                edit(ind) {
+                    this.state_add_display = false,
+                        this.edit_display = true,
+
+                        this.edit_index = ind,
+                        console.log(this.edit_display);
+                    this.edit_statename = this.states[ind].name,
+                        this.edit_capital = this.states[ind].capital,
+                        this.edit_population = this.states[ind].population,
+                        this.edit_cm = this.states[ind].cm
+
+                },
+                savechanges() {
+                    var ind = this.edit_index;
+                    this.states[ind].name = this.edit_statename,
+                        this.states[ind].capital = this.edit_capital,
+                        this.states[ind].population = this.edit_population,
+                        this.states[ind].cm = this.edit_cm,
+                        this.edit_display = false,
+                        this.state_add_display = false
+
+                },
+                editclose() {
+                    this.state_add_display = true,
+                        this.edit_display = false
+                },
+                addcity() {
+                    this.cities.push({
+                        "name": this.cityname,
+                        "state": this.city_state,
+                        "population": this.city_population,
+                        "mla": this.mla
+                    })
+
+                },
+                city_deleter(ind) {
+                    this.cities.splice(ind, 1);
+
+                },
+                city_edit(ind) {
+                    this.city_add_display = false,
+                        this.city_edit_display = true,
+                        this.city_edit_index = ind,
+
+                        this.edit_cityname = this.cities[ind].name,
+                        this.edit_state = this.cities[ind].state,
+                        this.edit_city_population = this.cities[ind].population,
+                        this.edit_mla = this.cities[ind].mla
+
+                },
+                city_savechanges() {
+                    var ind = this.city_edit_index;
+                    this.cities[ind].name = this.edit_cityname,
+                        this.cities[ind].state = this.edit_state,
+                        this.cities[ind].population = this.edit_city_population,
+                        this.cities[ind].mla = this.edit_mla,
+                        this.city_edit_display = false,
+                        this.city_add_display = true
+                },
+                editclose() {
+                    this.city_edit_display = false,
+                        this.city_add_display = false,
+                    this.state_add_display=false,
+                    this.edit_display=false
+
+
+                },
+                display_add_state_form()
+                {
+                    this.state_add_display=true;
+                    console.log(this.state_add_display)
+                    
+                },
+                display_add_city_form()
+                {
+                    this.city_add_display=true;
+                    console.log(this.state_add_display)
+                    
+                }
+
+
+
+            }
+        }).mount('#app')
+    </script>
+
+</body>
+
+</html>

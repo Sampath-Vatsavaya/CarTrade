@@ -1,0 +1,119 @@
+<html>
+<head>
+    <title>Nav Tag</title>
+</head>
+<body>
+<style>
+
+</style>
+<script src="vue.global.js" ></script>
+<div id="app" >
+    <com v-bind:items="data"></com>
+
+</div>
+<script>
+    const com = {
+        data(){
+            return {
+                newkey: '',
+            };
+        },
+        props: [ "items" ],
+        methods:{
+            addit: function(){
+                this.items[ this.newkey+ '' ] = {
+                    "t": "string",
+                    "v": "New Value"
+                };
+            },
+            change_type:function(k){
+                if( this.items[k]['t'] == "string" ){
+                    this.items[k]['v'] = "value";
+                }else if( this.items[k]['t'] == "number" ){
+                    this.items[k]['v'] = 0;
+                }else if( this.items[k]['t'] == "list" ){
+                    this.items[k]['v'] = [
+                        {
+                            "key": {"t":"string", "v": "value 1"}
+                        }
+                    ];
+                }else if( this.items[k]['t'] == "object" ){
+                    this.items[k]['v'] = {
+                        "key": {"t":"string", "v": "value 1"}
+                    };
+                }
+            },
+            addtolist: function(k){
+                this.items[k]['v'].push({
+                    "key": {
+                        "t":"string", "v": "List Value"
+                    }
+                })
+            }
+        },
+        template: `<div>
+            <ul>
+                <li v-for="v,k in items" >
+                    <div style="display:flex; border:1px solid #ccc; padding:5px;"  >
+                    <div>{{ k }}: </div>
+                    <div>
+                    <select v-model="v['t']" v-on:change="change_type(k)">
+                        <option value="string">String</option>
+                        <option value="number">Number</option>
+                        <option value="list">List</option>
+                        <option value="object">Object</option>
+                    </select>
+                    </div>
+                    <div v-if="v['t']=='string'" > 
+                        <input type="text" v-model="v['v']" >
+                    </div>
+                    <div v-if="v['t']=='object'" >
+                        <com v-bind:items="v['v']" ></com>
+                    </div>
+                    <div v-if="v['t']=='list'" >
+                        <ul>
+                            <li v-for="vv in v['v']" >
+                                <div style="border:1px solid #ccc; padding:5px; " >
+                                    <com v-bind:items="vv" ></com>
+                                </div>
+                            </li>
+                            <li>
+                                <div><input type="button" value="+" v-on:click="addtolist(k)"></div>
+                            </li>
+                        </ul>
+                    </div>
+                    </div>
+                </li>
+                <li>
+                    <div>
+                        <input type="text" v-model="newkey" placeholder="New Key" >
+                        <input type="button" value="+" v-on:click="addit" >
+                    </div>
+                </li>
+            </ul>
+            
+            
+        </div>`
+    };
+    const app = Vue.createApp({
+        data(){
+            return {
+                data: {
+                    "key": {"t":"string","v":"value"},
+                    "key2": {"t":"string","v":"value"},
+                    "key3": {"t":"array","v":[
+                        {
+                            "key": {"t":"string","v":"value"},
+                        }
+                    ]},
+                },
+            };
+        },
+        //components: { com }
+    });
+    app.component("com",com);
+    app.mount("#app");
+    
+</script>
+</body>
+</html>

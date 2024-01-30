@@ -1,0 +1,69 @@
+.row{
+    border: 2px solid black !important;
+    padding: 5px;
+}
+img{
+    border:none !important;
+}
+.dynamic{
+    outline: none;
+}
+.valid{
+    border: 1px solid blue;
+
+}
+.invalid{
+    border: 1px solid red;
+}
+.first-row{
+    display: flex !important; 
+
+}
+#name-col{
+    display: flex !important;
+}
+.updates-list{
+    display: flex;
+    gap: 10px;
+}
+.labels{
+    margin-bottom: 10px !important;
+}
+.heading{
+    color: white;
+    background-color: red;
+    justify-content: center;
+    align-items: center;
+    border: none !important;
+}
+#update-col{
+    display: flex;
+    gap: 20px !important;
+}
+#age-col{
+    display: flex;
+    gap:10px !important;
+    padding: 2px;;
+}
+#age-col label{
+    margin-top: 5px !important;
+}
+#gender-col{
+    display: flex;
+    gap: 10px;
+}
+#gender-col label,p{
+    margin-top: 10px !important;
+}
+input{
+    display: inline !important;
+}
+.add {
+    border: none !important;
+}
+.add select{
+    width:200px !important;
+}
+.container{
+    margin-top:20px !important;
+}

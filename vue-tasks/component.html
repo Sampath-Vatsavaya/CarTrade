@@ -1,0 +1,59 @@
+<html>
+<head>
+    <title>Nav Tag</title>
+</head>
+<body>
+<style>
+
+</style>
+<script src="vue.global.js" ></script>
+<div id="app" >
+    <com></com>
+
+    <com></com>
+
+    <com></com>
+
+    <com></com>
+</div>
+<script>
+    const com = {
+        data(){
+            return {
+                states: ["one", "two"],
+                newstate: '',
+            };
+        },
+        methods:{
+            adds(){
+                this.states.push( this.newstate+'' );
+                this.newstate = '';
+            }
+        },
+        template: `<div>
+            <div><input type="text" v-model="newstate" ><input type="button" value="+" v-on:click="adds" ></div>
+            <ul>
+                <li v-for="s in states" >{{ s }}</li>
+            </ul>
+        </div>`
+    };
+    const app = Vue.createApp({
+        data(){
+            return {
+                "tab": "one",
+                "states": {
+                    "Andhra": [
+                        "Kakinada", "Rajahmundry", "Visaka"
+                    ],
+                    "Tamil": [
+                        "Chennai", "RAmeswaram", "Kanyakmari", "Srirangam"
+                    ]
+                }
+            };
+        },
+        components: { com }
+    }).mount("#app");
+    
+</script>
+</body>
+</html>

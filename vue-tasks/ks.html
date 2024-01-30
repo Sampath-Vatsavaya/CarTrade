@@ -1,0 +1,67 @@
+<html>
+<head>
+    <title>Nav Tag</title>
+</head>
+<body>
+<style>
+  
+    .menubtn{ border:1px solid #ccc; padding:5px; margin-right:5px; cursor: pointer;}
+    .active{ background-color: #eee; }
+
+    .menubar2{ display:flex; border-bottom:1px solid #ccc; padding-left:20px; }
+    .menubtn2{ border:1px solid #ccc; padding:5px; margin-right:5px; cursor: pointer;}
+    .submenu{ position: absolute; display:none; border:1px solid #ccc; box-shadow:1px 1px 3px black; background-color: #f8f8f8;;}
+    .submenu1{ position: absolute; display:none; border:1px solid #ccc; box-shadow:1px 1px 3px black; background-color: #f8f8f8;;}
+    .submenu div{ padding:3px 10px; border-bottom:1px solid black;}
+    .submenu1 div{ padding:3px 10px; border-bottom:1px solid black;}
+    .submenu div:hover{ background-color: #ccc; font-weight: bold;}
+    .submenu1 div:hover{ background-color: #ccc; font-weight: bold;}
+    .menubtn2:hover .submenu{display:block;}
+    .menubtn3:hover .submenu1{display:block;}
+</style>
+<script src="vue.global.js" ></script>
+<div id="app" >
+  
+    <div>{{ tab }}</div>
+    <p>&nbsp;</p>
+    <div class="menubar2">
+        <div v-for="m,s in states" class="menubtn2" >
+            <div>{{ s }}</div>
+            <div class="submenu" >
+                <div v-for="c,t in m" class="menubtn3">
+                    <div>{{ t }}</div>
+                    <div class="submenu1">
+                        <div v-for="p,x in c" >
+                            {{ p }}
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var app = Vue.createApp({
+        data(){
+            return {
+                "tab": "one",
+                "states": {
+                    "Andhra": {
+                        "Kakinada":["corangi","Hope Island","Beach"],
+                        "Rajahmundry":["Godavari Bridges","pushkar Ghat","Iskcon"],
+                        "Visaka": ["RushiKonda Beach","Kailasa Giri","Dolphin Nose"]
+                    },
+                    "Tamil": {
+                        "Chennai":["Marina Beach","MGR Film City","Zoological Park"],
+                        "RAmeswaram":["Marina Beach","MGR Film City","Zoological Park"],
+                        "Kanyakmari":["Marina Beach","MGR Film City","Zoological Park"],
+                        "Srirangam":["Marina Beach","MGR Film City","Zoological Park"],
+                    }
+                }
+            };
+        }
+    }).mount("#app");
+</script>
+</body>
+</html>

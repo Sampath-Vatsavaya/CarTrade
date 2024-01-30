@@ -1,0 +1,38 @@
+<html>
+<head>
+    <title>Nav Tag</title>
+</head>
+<body>
+<style>
+
+</style>
+<script src="vue.global.js" ></script>
+<div id="app" >
+    <com v-bind:items="data"></com>
+
+</div>
+
+<script type="module">
+    import com from './component.js';
+    const app = Vue.createApp({
+        data(){
+            return {
+                data: {
+                    "key": {"t":"string","v":"value"},
+                    "key2": {"t":"string","v":"value"},
+                    "key3": {"t":"array","v":[
+                        {
+                            "key": {"t":"string","v":"value"},
+                        }
+                    ]},
+                },
+            };
+        },
+        //components: { com }
+    });
+    app.component("com",com);
+    app.mount("#app");
+    
+</script>
+</body>
+</html>

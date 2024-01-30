@@ -1,0 +1,90 @@
+<html>
+<head>
+	<title>Vue components</title>
+</head>
+<body>
+<script src="vue.global.js" ></script>
+<div id="app" >
+	<component v-bind:items="data"></component>
+	<div><input type="button" v-on:click="dosomething" value="DO" ></div>
+</div>
+<script>
+var component = {
+	data: function(){
+		return {
+
+		}
+	},
+	props: ["items"],
+	methods: {
+
+	},
+	template: `<div>
+		<div>I am component</div>
+		<ul>
+		<li v-for="d in items">
+			<div>{{ d['name'] }}</div>
+			<div v-if="'sub' in d" >
+				<component v-bind:items="d['sub']" ></component>
+			</div>
+			<div v-else> sub does not exists</div>
+		</li>
+		</ul>
+	</div>`
+};
+var app = Vue.createApp({
+	data(){
+		return {
+			data: {
+				"form_template": [
+					{
+						"label": "name",
+						"type": "text",
+						"validationrules": "",
+						"dest_variable": "",
+					},
+					{
+						"label": "name",
+						"type": "text",
+						"validationrules": "",
+						"dest_variable": "",
+					},
+					
+				]
+			}
+			data: [
+				{
+					"name": "Something",
+					"sub": [
+						{
+							"name":"sub item 1"	
+						}
+					]
+				},
+				{
+					"name": "Something2",
+					"sub": []
+				}
+			]
+		};
+	},
+	compute: {
+		amount: function(){
+			var t = 0;
+			foreach item
+				t = t + total;
+			return t;
+		}
+	}
+	//components: {},
+	methods: {
+		dosomething: function(){
+			this.data.push({"name":"New"});
+		}
+	}
+});
+app.component("component", component);
+app.mount("#app");
+</script>
+</body>
+</html>

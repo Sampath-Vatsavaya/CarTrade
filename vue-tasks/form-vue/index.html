@@ -1,0 +1,74 @@
+<html>
+<body>
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<div id="app" >
+    <h1>State Form</h1>
+    <input type="button" value="Add State" v-on:click="add_state()">
+	
+	<div>
+		<input type="text" v-model="new_state"  placeholder="New State"  >
+        <input type="text" v-model="new_capital"  placeholder="New Capital"  >
+        <input type="number" v-model="new_population"  placeholder="New Population"  >
+        <input type="text" v-model="new_cm"  placeholder="New CM"  >
+    </div>
+	
+    <ul>
+		<li v-for="v in state_properties" >{{ v.state }} <input type="button" value="X" v-on:click="del_city(i)" ></li>
+	</ul> 
+	
+
+</div>
+<script>
+var app = Vue.createApp({
+	data: function(){
+		return {
+			state_properties:[{
+                state: "AP",
+			    capital: "Amaravati",
+			    population: 4864484,
+			    cm: "xyz",
+			    
+            },{
+                state: "TS",
+			    capital: "Hyderabad",
+			    population: 48644834,
+			    cm: "abc",
+			    
+            }],
+            
+                new_state: "",
+			    new_capital: "",
+			    new_population: 0,
+			    new_cm: "",
+            
+		};
+	},
+	mounted: function(){
+
+	},
+	methods: {
+		add_state: function(){
+			this.state_properties.push( {
+                state:this.new_state,
+			    capital:this.new_capital,
+			    population:this.new_population, 
+			    cm:this.new_cm,
+            } );
+
+
+            this.new_state= "";
+            this.new_capital=  "";
+            this.new_population= 0;
+            this.new_cm= "";
+
+			
+		},
+		del_city: function( vi ){
+			this.cities.splice( vi, 1);
+		},
+	
+	},
+}).mount("#app");
+</script>
+</body>
+</html>
